@@ -29,11 +29,11 @@ class HealthRecordService {
   }
 
   Future<void> testAddHealthRecord() {
-    Map<String, dynamic> new_record= {
+    Map<String, dynamic> newRecord = {
       'blood_sugar': 123,
       'tension_DIA': 10,
       'tension_SYS': 10
     };
-    return addHealthRecord(new_record);
+    return addHealthRecord(newRecord);
   }
 }
