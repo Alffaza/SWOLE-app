@@ -100,7 +100,6 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                           decimal: true,
                           signed: false,
                         ),
-                        inputFormatters: decimalInputFormatter,
                         controller: controllerBloodSugar,
                         decoration: const InputDecoration(
                             labelText: 'Blood Sugar',
@@ -116,7 +115,6 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                           decimal: true,
                           signed: false,
                         ),
-                        inputFormatters: decimalInputFormatter,
                         controller: controllerTensionDIA,
                         decoration: const InputDecoration(
                             labelText: 'Tension DIA',
@@ -132,7 +130,6 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                           decimal: true,
                           signed: false,
                         ),
-                        inputFormatters: decimalInputFormatter,
                         controller: controllerTensionSYS,
                         decoration: const InputDecoration(
                             labelText: 'Tension SYS',
@@ -154,21 +151,35 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                               };
 
                               if(controllerBloodSugar.text != '') {
-                                newRecord['blood_sugar'] = int.parse(controllerBloodSugar.text);
+                                newRecord['blood_sugar'] = double.parse(controllerBloodSugar.text);
                                 controllerBloodSugar.clear();
                               }
 
                               if(controllerTensionDIA.text != '') {
-                                newRecord['tension_DIA'] = int.parse(controllerTensionDIA.text);
+                                newRecord['tension_DIA'] = double.parse(controllerTensionDIA.text);
                                 controllerTensionDIA.clear();
                               }
 
                               if(controllerTensionSYS.text != '') {
-                                newRecord['tension_SYS'] = int.parse(controllerTensionSYS.text);
+                                newRecord['tension_SYS'] = double.parse(controllerTensionSYS.text);
                                 controllerTensionSYS.clear();
                               }
 
                               healthRecordService.addHealthRecord(newRecord);
+                              showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                  AlertDialog(
+                                    title: const Text('SUCCESS'),
+                                    content: const Text('Successfully recorded your health!'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context, 'OK'),
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  )
+                              );
                             },
                             child: const Text('Add'),
                           )
@@ -179,50 +190,6 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                   ]
                 ),
               ),
-              
-              // SizedBox(
-              //   child: StreamBuilder<QuerySnapshot>(
-              //       stream: HealthRecordService().getUserHealthRecord(),
-              //       builder: (context, snapshot) {
-              //         if (snapshot.hasData) {
-              //           List recordList = snapshot.data!.docs;
-              //           for (var n in recordList
-              //               //           }
-              //               //           print(recordList.length);
-              //               //           return
-              //               //             SizedBox(
-              //               //               height: 200.0,
-              //               //               child: ListView.builder(
-              //               //                   itemCount: recordList.length,
-              //               //                   itemBuilder: (context, index) {
-              //               //                     DocumentSnapshot document = recordList[index];
-              //               //                     String docId = document.id;
-              //               //
-              //               //                     Map<String, dynamic> data =
-              //               //                     document.data() as Map<String, dynamic>;
-              //               //
-              //               //                     String noteText = data['blood_sugar'].toString();
-              //               //
-              //               //                     return
-              //               //                       ListTile(
-              //               //                         title: Text(noteText),
-              //               //                         trailing:
-              //               //                         IconButton(
-              //               //                           iconSize: 20,
-              //               //                           onPressed: () {
-              //               //
-              //               //                           },
-              //               //                           icon: Icon(Icons.delete),
-              //               //                         ),
-              //               //                       );
-              //               //                   }),
-              //               //             );
-              //               //         } else {
-              //               //           return const Text("Notes not found");
-              //               //         }
-              //               //       }),
-              //               // )){
-              //             print(n['blood_sugar']);
             ],
           ),
         ),
