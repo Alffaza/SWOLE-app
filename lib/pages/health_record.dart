@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:swole_app/services/health_record.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:3479317541.
 class HealthRecordPage extends StatefulWidget {
@@ -30,6 +32,25 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
           : newValue;
     }),
   ];
+
+  List<ChartData> chartData = <ChartData>[
+    ChartData(DateTime(2015, 1, 1, 1), 1.13),
+    ChartData(DateTime(2015, 1, 2, 2), 1.12),
+    ChartData(DateTime(2015, 1, 3, 3), 1.08),
+    ChartData(DateTime(2015, 1, 4, 4), 1.12),
+    ChartData(DateTime(2015, 1, 5, 5), 1.1),
+    ChartData(DateTime(2015, 1, 6, 6), 1.12),
+    ChartData(DateTime(2015, 1, 7, 7), 1.1),
+    ChartData(DateTime(2015, 1, 8, 8), 1.12),
+    ChartData(DateTime(2015, 1, 9, 9), 1.16),
+    ChartData(DateTime(2015, 1, 10, 10), 1.1),
+  ];
+
+  void updateHealthRecordGraph() {
+    chartData = [];
+
+    healthRecordService.getUserHealthRecord();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +85,47 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                     ),
                   ],
                 ),
-                child: const Center(child: Text('Graph Placeholder')),
+                child:
+                StreamBuilder<QuerySnapshot>(
+                  stream: healthRecordService.getUserHealthRecord(),
+                  builder: (context, snapshot) {
+                    List recordList = snapshot.data!.docs;
+
+                    var healthRecordKeys = ['blood_sugar', 'tension_DIA', 'tension_SYS'];
+
+                    Map<String, List<ChartData>> healthRecords = {
+                      'blood_sugar': [],
+                      'tension_DIA': [],
+                      'tension_SYS': []
+                    };
+
+                    for (var recordData in recordList) {
+                      for (var k in healthRecordKeys) {
+                          if (recordData.data().containsKey(k)) {
+                            healthRecords[k]?.add(ChartData(
+                                recordData['time'].toDate(), recordData[k]));
+                          }
+                        }
+                    }
+
+                    // print(recordList[0].data() as Map);
+
+                    return SfCartesianChart(
+                        primaryXAxis: const DateTimeAxis(
+                            majorGridLines: MajorGridLines(width: 0),
+                            edgeLabelPlacement: EdgeLabelPlacement.shift,
+                            intervalType: DateTimeIntervalType.days),
+                        series: <LineSeries<ChartData, DateTime>>[
+                          // Renders line chart
+                          LineSeries<ChartData, DateTime>(
+                              dataSource: healthRecords['blood_sugar'],
+                              xValueMapper: (ChartData data, _) => data.x,
+                              yValueMapper: (ChartData data, _) => data.y
+                          )
+                        ]
+                    );
+                  }
+                ),
               ),
               const SizedBox(height: 20),
               Container(
@@ -147,8 +208,7 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                           flex: 1,
                           child: TextButton(
                             onPressed: () {
-                              Map<String, dynamic> newRecord = {
-                              };
+                              Map<String, dynamic> newRecord = {};
 
                               if(controllerBloodSugar.text != '') {
                                 newRecord['blood_sugar'] = double.parse(controllerBloodSugar.text);
@@ -184,7 +244,6 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                             child: const Text('Add'),
                           )
                         )
-
                       ],
                     )
                   ]
@@ -196,4 +255,10 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
       ),
     );
   }
+}
+
+class ChartData {
+  ChartData(this.x, this.y);
+  final DateTime x;
+  final num y;
 }
