@@ -3,6 +3,7 @@ import 'pages/health_record.dart';
 import 'pages/exercise.dart';
 import 'pages/home.dart';
 import 'pages/profile.dart';
+import 'pages/routine.dart';
 
 class PageContainer extends StatefulWidget {
   const PageContainer({super.key});
@@ -17,6 +18,7 @@ class _PageContainerState extends State<PageContainer> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     ExercisePage(),
+    RoutinePage(),
     HealthRecordPage(),
     ProfilePage()
   ];
@@ -46,6 +48,10 @@ class _PageContainerState extends State<PageContainer> {
             label: 'Exercise',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.developer_board_outlined),
+            label: 'Routine',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: 'Health Record',
           ),
@@ -53,6 +59,7 @@ class _PageContainerState extends State<PageContainer> {
             icon: Icon(Icons.account_circle),
             label: 'Profile',
           ),
+
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
