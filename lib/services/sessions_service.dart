@@ -1,27 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SessionsService {
-  final CollectionReference notes =
+  final CollectionReference sessions =
   FirebaseFirestore.instance.collection('sessions');
 
-  Future<void> addNote(String note) {
-    return notes.add({'note': note, 'timestamp': Timestamp.now()});
+  final CollectionReference exercises =
+  FirebaseFirestore.instance.collection('exercises');
+
+  Future<void> addSession(session) {
+    return sessions.add(session);
   }
 
   Stream<QuerySnapshot> getSessionsStream()  {
-    final routinesStream = notes.snapshots();
+    final routinesStream = sessions.snapshots();
 
     return routinesStream;
   }
 
-  Future<void> updateNote(String docId, String newNote) {
-    return notes.doc(docId).update({
-      'note': newNote,
-      'timestamp': Timestamp.now()
-    });
+  void deleteSession(sessionId) {
+    sessions.doc(sessionId).delete();
   }
 
-  Future<void> deleteNote(String docId) {
-    return notes.doc(docId).delete();
+  Stream<QuerySnapshot> getExercisesStream() {
+    final exercisesStream = exercises.snapshots();
+
+    return exercisesStream;
   }
 }

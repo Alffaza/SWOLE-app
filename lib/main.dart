@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:swole_app/container.dart';
 import 'package:swole_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/intl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Intl.defaultLocale = 'id_ID';
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

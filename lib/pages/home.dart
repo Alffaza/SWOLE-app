@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:swole_app/services/sessions_service.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 // create stateless widget for home page
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:3479317541.
@@ -15,9 +17,7 @@ class _HomePageState extends State<HomePage> {
   final SessionsService sessionsService = SessionsService();
 
   List<Widget> createExercises(List<dynamic> exercises) {
-
     var widgets = exercises.map((e) {
-
       return FutureBuilder(
           future: e["exercise"].get(),
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -30,9 +30,19 @@ class _HomePageState extends State<HomePage> {
               var volume = e[type].toString();
 
               return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(name),
-                  Text('${volume} ${type == "reps" ? "reps" : "minutes"}')
+                  Text(
+                    name,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text(
+                    '${volume} ${type == "reps" ? "reps" : "minutes"}',
+                    style: TextStyle(fontSize: 15),
+                  )
                 ],
               );
             }
@@ -46,6 +56,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting();
+
     return StreamBuilder<QuerySnapshot>(
         stream: sessionsService.getSessionsStream(),
         builder: (context, snapshot) {
@@ -55,26 +67,63 @@ class _HomePageState extends State<HomePage> {
             return ListView.builder(
                 itemCount: sessionsList.length,
                 itemBuilder: (context, index) {
-                  var document = sessionsList[0];
+                  var document = sessionsList[index];
                   Map<String, dynamic> data =
                       document.data() as Map<String, dynamic>;
 
+                  final dateFormatter = DateFormat("dd MMMM HH:mm");
+                  final workoutDate =
+                      dateFormatter.format(data["date"].toDate());
+
                   return Container(
-                    padding: EdgeInsets.all(10),
-                    color: Colors.amber,
+                    padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                    margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(data["note"]),
-                        Column(
+                        Row(
                           children: [
-                            Text("Time"),
-                            Text(data["time"].toString())
+                            Text(
+                              data["note"] == "" ? "No note" : data["note"],
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.w500),
+                            ),
+                            Expanded(child: SizedBox()),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                sessionsService.deleteSession(document.id);
+                              },
+                            )
                           ],
+                        ),
+                        SizedBox(
+                          height: 3,
+                        ),
+                        Text('${workoutDate} (${data["time"]} minutes)'),
+                        SizedBox(
+                          height: 5,
                         ),
                         Divider(
                           color: Colors.black,
                         ),
-                        Text("Workout",),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "Workout ",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Column(
                           children: createExercises(data["exercises"]),
                         ),
