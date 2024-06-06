@@ -1,23 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RoutineService {
-  final CollectionReference routineRecords =
+  final CollectionReference routines =
   FirebaseFirestore.instance.collection('routines');
 
+  final CollectionReference exercises =
+  FirebaseFirestore.instance.collection('exercises');
+
   Future<void> addRoutineRecord(Map<String, dynamic> record) {
-    return routineRecords.add(record);
+    return routines.add(record);
   }
 
-  Stream<QuerySnapshot> getRoutineRecords() {
-    return routineRecords.snapshots();
+  Stream<QuerySnapshot> getRoutinesStream() {
+    final routinesStream = routines.snapshots();
+
+    return routinesStream;
   }
+
 
   Future<void> updateRoutineRecord(String docId, Map<String, dynamic> updatedData) {
-    return routineRecords.doc(docId).update(updatedData);
+    return routines.doc(docId).update(updatedData);
   }
 
   Future<void> deleteRoutineRecord(String docId) {
-    return routineRecords.doc(docId).delete();
+    return routines.doc(docId).delete();
+  }
+
+  Stream<QuerySnapshot> getExercisesStream() {
+    final exercisesStream = exercises.snapshots();
+
+    return exercisesStream;
   }
 
 
