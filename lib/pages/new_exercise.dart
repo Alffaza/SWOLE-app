@@ -206,6 +206,24 @@ class _NewExercisePageState extends State<NewExercisePage> {
                   borderRadius: BorderRadius.circular(10))),
             ),
           ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Discard",
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith(
+                    (states) {
+                  return Colors.red;
+                },
+              ),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10))),
+            ),
+          ),
         ],
       ),
     );
