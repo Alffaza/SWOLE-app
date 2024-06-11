@@ -15,6 +15,8 @@ class RoutinePage extends StatefulWidget {
 class _RoutinePageState extends State<RoutinePage> {
   @override
   Widget build(BuildContext context) {
+    final String userId = FirebaseAuth.instance.currentUser!.uid;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -31,7 +33,11 @@ class _RoutinePageState extends State<RoutinePage> {
         elevation: 0.0,
       ),
       body: StreamBuilder<QuerySnapshot>(
+<<<<<<< Updated upstream
         stream: RoutineService().getRoutinesStream(),
+=======
+        stream: RoutineService(userId).getRoutinesStream(),
+>>>>>>> Stashed changes
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<QueryDocumentSnapshot> routines = snapshot.data!.docs;
@@ -80,6 +86,7 @@ class _RoutinePageState extends State<RoutinePage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ReadRoutinePage(
+                          userId: userId,
                           routineId: docID,
                           routineName: routineName,
                         ),
