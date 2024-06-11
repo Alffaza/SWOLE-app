@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,8 +17,6 @@ class HealthRecordPage extends StatefulWidget {
 }
 
 class _HealthRecordPageState extends State<HealthRecordPage> {
-  final HealthRecordService healthRecordService = HealthRecordService();
-
   final TextEditingController controllerTensionDIA = TextEditingController();
   final TextEditingController controllerTensionSYS = TextEditingController();
   final TextEditingController controllerBloodSugar = TextEditingController();
@@ -49,7 +48,7 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
   void updateHealthRecordGraph() {
     chartData = [];
 
-    healthRecordService.getUserHealthRecord();
+    HealthRecordService(FirebaseAuth.instance.currentUser!.uid).getUserHealthRecord();
   }
 
   @override
@@ -58,6 +57,8 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
     // HealthRecordService().testAddHealthRecord();
     // print('===Health Record===');
     // print(HealthRecordService().getUserHealthRecord());
+
+    var healthRecordService = HealthRecordService(FirebaseAuth.instance.currentUser!.uid);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

@@ -3,8 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 final userId = '5fWy2Ep1WbK59J6Ncn1a';
 
 class HealthRecordService {
-  final CollectionReference userHealthRecords =
-    FirebaseFirestore.instance.collection('users').doc(userId).collection('health_records');
+  final String _userId;
+  final CollectionReference userHealthRecords;
+
+  HealthRecordService(this._userId)
+      : userHealthRecords = FirebaseFirestore.instance
+      .collection("users")
+      .doc(_userId)
+      .collection('health_records');
 
   Future<void> addHealthRecord(Map<String, dynamic> record) {
     record['time'] = Timestamp.now();

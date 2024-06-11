@@ -1,17 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SessionsService {
-  final CollectionReference sessions =
-  FirebaseFirestore.instance.collection("users").doc("x5lX47E5HsS1QBLQJidRyPetRJb2").collection('sessions');
+  final String _userId;
+  final CollectionReference sessions;
+
+  SessionsService(this._userId)
+      : sessions = FirebaseFirestore.instance
+            .collection("users")
+            .doc(_userId)
+            .collection('sessions');
 
   final CollectionReference exercises =
-  FirebaseFirestore.instance.collection('exercises');
+      FirebaseFirestore.instance.collection('exercises');
 
   Future<void> addSession(session) {
     return sessions.add(session);
   }
 
-  Stream<QuerySnapshot> getSessionsStream()  {
+  Stream<QuerySnapshot> getSessionsStream() {
     final routinesStream = sessions.snapshots();
 
     return routinesStream;

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:swole_app/services/routine_service.dart';
@@ -29,7 +30,7 @@ class _UpdateRoutinePageState extends State<UpdateRoutinePage> {
   }
 
   void _loadRoutineData() async {
-    DocumentSnapshot routineDoc = await RoutineService().routines.doc(widget.routineId).get();
+    DocumentSnapshot routineDoc = await RoutineService(FirebaseAuth.instance.currentUser!.uid).routines.doc(widget.routineId).get();
     Map<String, dynamic> data = routineDoc.data() as Map<String, dynamic>;
 
     setState(() {
@@ -44,7 +45,7 @@ class _UpdateRoutinePageState extends State<UpdateRoutinePage> {
     return Scaffold(
       appBar: AppBar(
         title: StreamBuilder<DocumentSnapshot>(
-          stream: RoutineService().routines.doc(widget.routineId).snapshots(),
+          stream: RoutineService(FirebaseAuth.instance.currentUser!.uid).routines.doc(widget.routineId).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
@@ -91,7 +92,7 @@ class _UpdateRoutinePageState extends State<UpdateRoutinePage> {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: RoutineService().getExercisesStream(),
+              stream: RoutineService(FirebaseAuth.instance.currentUser!.uid).getExercisesStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<QueryDocumentSnapshot> exercises = snapshot.data!.docs;
@@ -135,7 +136,7 @@ class _UpdateRoutinePageState extends State<UpdateRoutinePage> {
               'exercises': selectedExercises.map((id) => FirebaseFirestore.instance.doc('exercises/$id')).toList(),
             };
 
-            RoutineService().updateRoutineRecord(widget.routineId, updatedRoutine);
+            RoutineService(FirebaseAuth.instance.currentUser!.uid).updateRoutineRecord(widget.routineId, updatedRoutine);
 
             showDialog<String>(
               context: context,

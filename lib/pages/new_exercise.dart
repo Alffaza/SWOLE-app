@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:swole_app/container.dart';
 import 'dart:async';
@@ -20,7 +21,6 @@ class NewExercisePage extends StatefulWidget {
 }
 
 class _NewExercisePageState extends State<NewExercisePage> {
-  SessionsService sessionsService = SessionsService();
 
   final _stopwatch = Stopwatch();
   int _elapsedTime = 0;
@@ -67,6 +67,10 @@ class _NewExercisePageState extends State<NewExercisePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = FirebaseAuth.instance.currentUser!;
+    final SessionsService sessionsService = SessionsService(user.uid);
+
     _stopwatch.start();
 
     return Scaffold(

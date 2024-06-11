@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:swole_app/services/sessions_service.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // create stateless widget for home page
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:3479317541.
@@ -14,9 +15,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final SessionsService sessionsService = SessionsService();
 
   List<Widget> createExercises(List<dynamic> exercises) {
+    final user = FirebaseAuth.instance.currentUser!;
+    final SessionsService sessionsService = SessionsService(user.uid);
+
     var widgets = exercises.map((e) {
       return FutureBuilder(
           future: e["exercise"].get(),
@@ -57,6 +60,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting();
+
+    final user = FirebaseAuth.instance.currentUser!;
+    final SessionsService sessionsService = SessionsService(user.uid);
 
     return StreamBuilder<QuerySnapshot>(
         stream: sessionsService.getSessionsStream(),

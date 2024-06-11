@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:swole_app/services/sessions_service.dart';
@@ -11,7 +12,6 @@ class ExerciseDetailPage extends StatefulWidget {
 }
 
 class _ExerciseDetailPageState extends State<ExerciseDetailPage> {
-  final SessionsService sessionsService = SessionsService();
 
   List<Widget> createExercises(BuildContext context, List exercises) {
     var widgets = exercises.map((doc) {
@@ -52,6 +52,10 @@ class _ExerciseDetailPageState extends State<ExerciseDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = FirebaseAuth.instance.currentUser!;
+    final SessionsService sessionsService = SessionsService(user.uid);
+
     return StreamBuilder<QuerySnapshot>(
         stream: sessionsService.getExercisesStream(),
         builder: (context, snapshot) {

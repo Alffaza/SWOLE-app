@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:swole_app/pages/create_routine.dart';
 import 'package:swole_app/pages/update_routine.dart';
@@ -31,7 +32,7 @@ class _RoutinePageState extends State<RoutinePage> {
         elevation: 0.0,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: RoutineService().getRoutinesStream(),
+        stream: RoutineService(FirebaseAuth.instance.currentUser!.uid).getRoutinesStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<QueryDocumentSnapshot> routines = snapshot.data!.docs;
@@ -120,7 +121,7 @@ class _RoutinePageState extends State<RoutinePage> {
             ),
             TextButton(
               onPressed: () {
-                RoutineService().deleteRoutineRecord(docID);
+                RoutineService(FirebaseAuth.instance.currentUser!.uid).deleteRoutineRecord(docID);
                 Navigator.pop(context, 'Delete');
               },
               child: const Text('Delete'),

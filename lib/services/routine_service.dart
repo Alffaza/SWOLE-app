@@ -1,8 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RoutineService {
-  final CollectionReference routines =
-  FirebaseFirestore.instance.collection('routines');
+  final String _userId;
+  final CollectionReference routines;
+
+  RoutineService(this._userId)
+      : routines = FirebaseFirestore.instance
+      .collection("users")
+      .doc(_userId)
+      .collection('routines');
 
   final CollectionReference exercises =
   FirebaseFirestore.instance.collection('exercises');

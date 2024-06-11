@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../services/routine_service.dart';
 import 'new_exercise.dart';
@@ -83,7 +84,7 @@ class ExercisePage extends StatelessWidget {
           height: 10,
         ),
         StreamBuilder<QuerySnapshot>(
-            stream: RoutineService().getRoutinesStream(),
+            stream: RoutineService(FirebaseAuth.instance.currentUser!.uid).getRoutinesStream(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<QueryDocumentSnapshot> routines = snapshot.data!.docs;
