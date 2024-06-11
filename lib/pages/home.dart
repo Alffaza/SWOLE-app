@@ -64,6 +64,12 @@ class _HomePageState extends State<HomePage> {
           if (snapshot.hasData) {
             List sessionsList = snapshot.data!.docs;
 
+            if (sessionsList.isEmpty) {
+              return const Center(
+                child: Text("No session..."),
+              );
+            }
+
             return ListView.builder(
                 itemCount: sessionsList.length,
                 itemBuilder: (context, index) {
