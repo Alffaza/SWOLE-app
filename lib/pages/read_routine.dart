@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:swole_app/services/routine_service.dart';
 
 class ReadRoutinePage extends StatefulWidget {
+  final String userId;
   final String routineId;
   final String routineName;
 
-  const ReadRoutinePage({ //prerequisite checker
+  const ReadRoutinePage({
     Key? key,
+    required this.userId,
     required this.routineId,
     required this.routineName,
   }) : super(key: key);
@@ -22,7 +23,7 @@ class _ReadRoutinePageState extends State<ReadRoutinePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.routineName, //based on id
+          widget.routineName,
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.bold,
@@ -35,14 +36,19 @@ class _ReadRoutinePageState extends State<ReadRoutinePage> {
         elevation: 0.0,
       ),
       body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('routines').doc(widget.routineId).get(),
+        future: FirebaseFirestore.instance
+            .collection('users')
+            .doc(widget.userId)
+            .collection('routines')
+            .doc(widget.routineId)
+            .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator()); //load
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}")); //error checker
+            return Center(child: Text("Error: ${snapshot.error}"));
           } else if (snapshot.hasData && snapshot.data!.exists) {
-            List<dynamic> exercisesRefs = snapshot.data!['exercises']; //list
+            List<dynamic> exercisesRefs = snapshot.data!['exercises'];
             return ListView.builder(
               itemCount: exercisesRefs.length,
               itemBuilder: (context, index) {
@@ -50,7 +56,7 @@ class _ReadRoutinePageState extends State<ReadRoutinePage> {
                 return FutureBuilder<DocumentSnapshot>(
                   future: exerciseRef.get(),
                   builder: (context, exerciseSnapshot) {
-                    if (exerciseSnapshot.connectionState == ConnectionState.waiting) { //load and error checker
+                    if (exerciseSnapshot.connectionState == ConnectionState.waiting) {
                       return ListTile(title: Text("Loading..."));
                     } else if (exerciseSnapshot.hasError) {
                       return ListTile(title: Text("Error: ${exerciseSnapshot.error}"));
