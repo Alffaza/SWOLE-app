@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:swole_app/container.dart';
+import 'package:swole_app/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/intl.dart';
+import 'package:swole_app/pages/auth_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Intl.defaultLocale = 'id_ID';
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -32,7 +44,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const PageContainer(),
+      home: const AuthPage(),
     );
   }
 }

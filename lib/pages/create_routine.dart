@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:swole_app/firebase_options.dart';
@@ -48,7 +49,7 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: RoutineService().getExercisesStream(),
+              stream: RoutineService(FirebaseAuth.instance.currentUser!.uid).getExercisesStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<QueryDocumentSnapshot> exercises = snapshot.data!.docs;
@@ -98,7 +99,7 @@ class _CreateRoutinePageState extends State<CreateRoutinePage> {
             nameController.clear();
             selectedExercises.clear();
 
-            RoutineService().addRoutineRecord(newRoutine);
+            RoutineService(FirebaseAuth.instance.currentUser!.uid).addRoutineRecord(newRoutine);
 
             showDialog<String>(
               context: context,
