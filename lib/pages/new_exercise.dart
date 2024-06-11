@@ -8,7 +8,12 @@ import 'package:swole_app/services/sessions_service.dart';
 
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:3479317541.
 class NewExercisePage extends StatefulWidget {
-  const NewExercisePage({Key? key}) : super(key: key);
+  List<dynamic> exercises;
+
+  NewExercisePage({ //prerequisite checker
+    Key? key,
+    this.exercises = const [],
+  }) : super(key: key);
 
   @override
   State<NewExercisePage> createState() => _NewExercisePageState();
@@ -29,6 +34,16 @@ class _NewExercisePageState extends State<NewExercisePage> {
   @override
   void initState() {
     super.initState();
+
+    print("ngok");
+    print(widget.exercises);
+
+    exercises = List<dynamic>.from(widget.exercises);
+
+    for (var exercise in exercises) {
+      var textController = TextEditingController(text: "0");
+      textControllers[exercise["id"]] = textController;
+    }
 
     timer = Timer.periodic(const Duration(milliseconds: 100), (Timer timer) {
       setState(() {
@@ -187,6 +202,11 @@ class _NewExercisePageState extends State<NewExercisePage> {
 
               exercise["volume"] = 0;
 
+              print({
+                "ja": exercise
+              });
+              
+              print(widget.exercises);
               exercises.add(exercise);
 
               var textController = TextEditingController(text: "0");
