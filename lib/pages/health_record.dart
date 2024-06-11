@@ -20,6 +20,7 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
   final TextEditingController controllerTensionDIA = TextEditingController();
   final TextEditingController controllerTensionSYS = TextEditingController();
   final TextEditingController controllerBloodSugar = TextEditingController();
+  final TextEditingController controllerBodyWeight = TextEditingController();
   dynamic decimalInputFormatter = [
     FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
     TextInputFormatter.withFunction((oldValue, newValue) {
@@ -90,14 +91,18 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                 StreamBuilder<QuerySnapshot>(
                   stream: healthRecordService.getUserHealthRecord(),
                   builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
                     List recordList = snapshot.data!.docs;
 
-                    var healthRecordKeys = ['blood_sugar', 'tension_DIA', 'tension_SYS'];
+                    var healthRecordKeys = ['blood_sugar', 'tension_DIA', 'tension_SYS', 'body_weight'];
 
                     Map<String, List<ChartData>> healthRecords = {
                       'blood_sugar': [],
                       'tension_DIA': [],
-                      'tension_SYS': []
+                      'tension_SYS': [],
+                      'body_weight': []
                     };
 
                     for (var recordData in recordList) {
@@ -105,13 +110,18 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                           if (recordData.data().containsKey(k)) {
                             healthRecords[k]?.add(ChartData(
                                 recordData['time'].toDate(), recordData[k]));
+                            print("$k : ${recordData[k]} ${recordData["time"].toDate()}");
                           }
+
                         }
                     }
-
-                    // print(recordList[0].data() as Map);
+                    // print(healthRecords['blood_sugar']);
+                    // for (var i in healthRecords['blood_sugar']!) {
+                    //   print("blood sugar ${i.x} ${i.y}");
+                    // }
 
                     return SfCartesianChart(
+                        legend: const Legend(isVisible: true),
                         primaryXAxis: const DateTimeAxis(
                             majorGridLines: MajorGridLines(width: 0),
                             edgeLabelPlacement: EdgeLabelPlacement.shift,
@@ -119,10 +129,29 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                         series: <LineSeries<ChartData, DateTime>>[
                           // Renders line chart
                           LineSeries<ChartData, DateTime>(
+                              name: 'blood sugar',
                               dataSource: healthRecords['blood_sugar'],
                               xValueMapper: (ChartData data, _) => data.x,
                               yValueMapper: (ChartData data, _) => data.y
-                          )
+                          ),
+                          LineSeries<ChartData, DateTime>(
+                              name: 'tension DIA',
+                              dataSource: healthRecords['tension_DIA'],
+                              xValueMapper: (ChartData data, _) => data.x,
+                              yValueMapper: (ChartData data, _) => data.y
+                          ),
+                          LineSeries<ChartData, DateTime>(
+                              name: 'tension SYS',
+                              dataSource: healthRecords['tension_SYS'],
+                              xValueMapper: (ChartData data, _) => data.x,
+                              yValueMapper: (ChartData data, _) => data.y
+                          ),
+                          LineSeries<ChartData, DateTime>(
+                              name: 'weight',
+                              dataSource: healthRecords['body_weight'],
+                              xValueMapper: (ChartData data, _) => data.x,
+                              yValueMapper: (ChartData data, _) => data.y
+                          ),
                         ]
                     );
                   }
@@ -131,7 +160,7 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
               const SizedBox(height: 20),
               Container(
                 width: 320,
-                height: 360,
+                height: 320,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color(0xffDEFDFD),
@@ -156,7 +185,7 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                     ),
                     Text(Timestamp.now().toDate().toString()),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 0.0),
                       child: TextFormField(
                         keyboardType:  const TextInputType.numberWithOptions(
                           decimal: true,
@@ -165,13 +194,13 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                         controller: controllerBloodSugar,
                         decoration: const InputDecoration(
                             labelText: 'Blood Sugar',
+                            contentPadding: EdgeInsets.all(8),
                             border: OutlineInputBorder()
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 0.0),
                       child: TextFormField(
                         keyboardType:  const TextInputType.numberWithOptions(
                           decimal: true,
@@ -180,13 +209,13 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                         controller: controllerTensionDIA,
                         decoration: const InputDecoration(
                             labelText: 'Tension DIA',
+                            contentPadding: EdgeInsets.all(8),
                             border: OutlineInputBorder()
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 0.0),
                       child: TextFormField(
                         keyboardType:  const TextInputType.numberWithOptions(
                           decimal: true,
@@ -195,6 +224,22 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                         controller: controllerTensionSYS,
                         decoration: const InputDecoration(
                             labelText: 'Tension SYS',
+                            contentPadding: EdgeInsets.all(8),
+                            border: OutlineInputBorder()
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 0.0),
+                      child: TextFormField(
+                        keyboardType:  const TextInputType.numberWithOptions(
+                          decimal: true,
+                          signed: false,
+                        ),
+                        controller: controllerBodyWeight,
+                        decoration: const InputDecoration(
+                            labelText: 'Body Weight',
+                            contentPadding: EdgeInsets.all(8),
                             border: OutlineInputBorder()
                         ),
                       ),
@@ -226,7 +271,13 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                                 controllerTensionSYS.clear();
                               }
 
+                              if(controllerBodyWeight.text != '') {
+                                newRecord['body_weight'] = double.parse(controllerBodyWeight.text);
+                                controllerBodyWeight.clear();
+                              }
+
                               healthRecordService.addHealthRecord(newRecord);
+                              setState(() {});
                               showDialog<String>(
                                   context: context,
                                   builder: (BuildContext context) =>

@@ -33,13 +33,4 @@ class HealthRecordService {
   Future<void> deleteHealthRecord(String docId) {
     return userHealthRecords.doc(docId).delete();
   }
-
-  Future<void> testAddHealthRecord() {
-    Map<String, dynamic> newRecord = {
-      'blood_sugar': 123,
-      'tension_DIA': 10,
-      'tension_SYS': 10
-    };
-    return addHealthRecord(newRecord);
-  }
 }
