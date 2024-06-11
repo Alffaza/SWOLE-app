@@ -12,7 +12,20 @@
           "package_name": "com.example.swole_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "747588748976-kukg2gi0r3fv4apvm9gomqlm3ad9dogu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.swole_app",
+            "certificate_hash": "9237472e400eceb2e1feab34b8f3e19af44df4fd"
+          }
+        },
+        {
+          "client_id": "747588748976-n2hieuij5omv9mf4hpejik8ar704oc9k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC3mo78IRQ-NclSdfVbdwhuaQ2CUUngUtw"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "747588748976-e11fu90eb8etpsf44hu2f31np0ra71ch.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
