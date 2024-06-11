@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:swole_app/pages/edit_birthdate.dart';
 
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:3479317541.
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
 
   void signUserOut() {
     FirebaseAuth.instance.signOut();
@@ -41,27 +49,28 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               Divider(
-                height: 90,
+                height: 70,
                 color: Colors.grey[800],
               ),
-              Text(
-                'NAME',
-                style: TextStyle(
-                    color: Colors.grey[600],
-                    letterSpacing: 2,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text(
-                user.displayName ?? "No name",
-                style: TextStyle(
-                    color: Colors.amber[500],
-                    letterSpacing: 2,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 30),
+              // Text(
+              //   'NAME',
+              //   style: TextStyle(
+              //       color: Colors.grey[600],
+              //       letterSpacing: 2,
+              //       fontSize: 20,
+              //       fontWeight: FontWeight.bold),
+              // ),
+
+              // SizedBox(height: 10),
+              // Text(
+              //   user.displayName ?? "No name",
+              //   style: TextStyle(
+              //       color: Colors.amber[500],
+              //       letterSpacing: 2,
+              //       fontSize: 28,
+              //       fontWeight: FontWeight.bold),
+              // )
+
               Text(
                 'Age',
                 style: TextStyle(
@@ -71,13 +80,22 @@ class ProfilePage extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              Text(
-                '60',
-                style: TextStyle(
-                    color: Colors.amber[500],
-                    letterSpacing: 2,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Text(
+                    '60',
+                    style: TextStyle(
+                        color: Colors.amber[500],
+                        letterSpacing: 2,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(child: SizedBox(),),
+
+                  IconButton(onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditBirthdatePage()));
+                  }, icon: Icon(Icons.edit))
+                ],
               ),
               SizedBox(height: 30),
               Row(
