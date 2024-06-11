@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:swole_app/pages/edit_birthdate.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:3479317541.
 class ProfilePage extends StatefulWidget {
@@ -12,14 +15,16 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   void signUserOut() {
     FirebaseAuth.instance.signOut();
   }
 
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting();
     final user = FirebaseAuth.instance.currentUser!;
+
+    final dateFormatter = DateFormat("dd MMMM yyyy", "id_ID");
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -42,16 +47,6 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/brucewayne.jpg'),
-                  radius: 50,
-                ),
-              ),
-              Divider(
-                height: 70,
-                color: Colors.grey[800],
-              ),
               // Text(
               //   'NAME',
               //   style: TextStyle(
@@ -72,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
               // )
 
               Text(
-                'Age',
+                'Birth Date',
                 style: TextStyle(
                     color: Colors.grey[600],
                     letterSpacing: 2,
@@ -82,19 +77,33 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 10),
               Row(
                 children: [
-                  Text(
-                    '60',
-                    style: TextStyle(
-                        color: Colors.amber[500],
-                        letterSpacing: 2,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(child: SizedBox(),),
+                  FutureBuilder(
+                      future: FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .get(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var data = snapshot.data!.data();
+                          if (data!.containsKey("birthdate")) {
+                            return Text(dateFormatter
+                                .format(snapshot.data!["birthdate"].toDate()));
+                          }
+                        }
 
-                  IconButton(onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditBirthdatePage()));
-                  }, icon: Icon(Icons.edit))
+                        return Text("-");
+                      }),
+                  Expanded(
+                    child: SizedBox(),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditBirthdatePage()));
+                      },
+                      icon: Icon(Icons.edit))
                 ],
               ),
               SizedBox(height: 30),

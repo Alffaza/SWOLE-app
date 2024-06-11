@@ -3,6 +3,7 @@ import 'package:swole_app/components/my_button.dart';
 import 'package:swole_app/components/my_textfield.dart';
 import 'package:swole_app/components/square_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:swole_app/pages/auth_page.dart';
 import 'package:swole_app/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AuthPage()));
       print("Login sukses");
     } on FirebaseAuthException catch (e) {
       print({"eek": e});

@@ -28,66 +28,38 @@ class _EditBirthdatePageState extends State<EditBirthdatePage> {
       ),
       body: ListView(
         children: [
-          Expanded(
-            child: SizedBox(
-              height: 150,
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.date,
-                initialDateTime: selectedDate,
-                onDateTimeChanged: (DateTime newDateTime) {
-                  setState(() {
-                    selectedDate = newDateTime;
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 25),
+
+            child: InputDatePickerFormField(
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+              onDateSubmitted: (DateTime value) async {
+                try {
+                  print({
+                    "birthdate": value,
+                    "user": FirebaseAuth.instance.currentUser!.uid,
                   });
-                },
-              ),
+
+                  await FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .update({"birthdate": Timestamp.fromDate(value)});
+
+                  print("done update");
+
+                  Navigator.pop(context);
+                } catch (e) {
+                  print({
+                    "nguak": e,
+                  });
+                }
+              },
             ),
           ),
           SizedBox(
             height: 20,
           ),
-          GestureDetector(
-            onTap: () async {
-              try {
-                print({
-                  "birthdate": selectedDate,
-                  "user": FirebaseAuth.instance.currentUser!.uid,
-                });
-
-                await FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .update({
-                  "name": "Ryo"
-                });
-
-                print("done update");
-
-                Navigator.pop(context);
-              } catch (e) {
-                print({
-                  "nguak": e,
-                });
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-              margin: const EdgeInsets.symmetric(horizontal: 25),
-              decoration: BoxDecoration(
-                color: Colors.amber,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Center(
-                child: Text(
-                  "Update",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
