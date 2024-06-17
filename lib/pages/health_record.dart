@@ -356,6 +356,7 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                                               width: double.maxFinite,
                                               height: double.maxFinite,
                                               child: ListView.builder(
+                                                shrinkWrap: true,
                                                 itemCount: exerciseTips.length,
                                                 itemBuilder: (context, tipIndex) {
                                                   var exerciseTip = exerciseTips[tipIndex];
@@ -365,6 +366,7 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                                                     Expanded(
                                                       flex: 1,
                                                       child: ListView.builder(
+                                                          shrinkWrap: true,
                                                           itemCount: exerciseTip
                                                               .content.length,
                                                           itemBuilder: (context,
