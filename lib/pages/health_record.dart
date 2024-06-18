@@ -363,53 +363,50 @@ class _HealthRecordPageState extends State<HealthRecordPage> {
                                                   return ListTile(
                                                     title: Text(exerciseTip.tipTitle),
                                                     subtitle:
-                                                    Expanded(
-                                                      flex: 1,
-                                                      child: ListView.builder(
-                                                          shrinkWrap: true,
-                                                          itemCount: exerciseTip
-                                                              .content.length,
-                                                          itemBuilder: (context,
-                                                              exIndex) {
-                                                            return FutureBuilder<
-                                                                DocumentSnapshot>(
-                                                              future: exerciseTip
-                                                                  .content[exIndex]
-                                                                  .get(),
-                                                              builder: (context,
-                                                                  exerciseSnapshot) {
-                                                                if (exerciseSnapshot
-                                                                    .connectionState ==
-                                                                    ConnectionState
-                                                                        .waiting) {
-                                                                  return ListTile(title: Text("Loading..."));
-                                                                } else
-                                                                if (exerciseSnapshot
-                                                                    .hasError) {
-                                                                  return ListTile(
-                                                                      title: Text(
-                                                                          "Error: ${exerciseSnapshot
-                                                                              .error}"));
-                                                                } else
-                                                                if (exerciseSnapshot
-                                                                    .hasData &&
-                                                                    exerciseSnapshot
-                                                                        .data!
-                                                                        .exists) {
-                                                                  String exerciseName = exerciseSnapshot
-                                                                      .data!['name'];
-                                                                  return ListTile(
-                                                                      title: Text(
-                                                                          exerciseName));
-                                                                } else {
-                                                                  return ListTile(
-                                                                      title: Text("Exercise not found")
-                                                                  );
-                                                                }
-                                                              },
-                                                            );
-                                                          }
-                                                      ),
+                                                    ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount: exerciseTip
+                                                            .content.length,
+                                                        itemBuilder: (context,
+                                                            exIndex) {
+                                                          return FutureBuilder<
+                                                              DocumentSnapshot>(
+                                                            future: exerciseTip
+                                                                .content[exIndex]
+                                                                .get(),
+                                                            builder: (context,
+                                                                exerciseSnapshot) {
+                                                              if (exerciseSnapshot
+                                                                  .connectionState ==
+                                                                  ConnectionState
+                                                                      .waiting) {
+                                                                return ListTile(title: Text("Loading..."));
+                                                              } else
+                                                              if (exerciseSnapshot
+                                                                  .hasError) {
+                                                                return ListTile(
+                                                                    title: Text(
+                                                                        "Error: ${exerciseSnapshot
+                                                                            .error}"));
+                                                              } else
+                                                              if (exerciseSnapshot
+                                                                  .hasData &&
+                                                                  exerciseSnapshot
+                                                                      .data!
+                                                                      .exists) {
+                                                                String exerciseName = exerciseSnapshot
+                                                                    .data!['name'];
+                                                                return ListTile(
+                                                                    title: Text(
+                                                                        exerciseName));
+                                                              } else {
+                                                                return ListTile(
+                                                                    title: Text("Exercise not found")
+                                                                );
+                                                              }
+                                                            },
+                                                          );
+                                                        }
                                                     ),
                                                   );
                                                 }
